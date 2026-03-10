@@ -246,6 +246,11 @@ public:
 
     static const float EPSILON; 
 
+    // The following comment is wrong. Modern linkers are smart enough to deduplicate
+    // multiple static objects into a single memory address, as long as any function with
+    // a static local variable is marked inline.
+
+    // *** Original G3D comment ***
     // Special values.
     // The unguaranteed order of initialization of static variables across 
     // translation units can be a source of annoying bugs, so now the static
@@ -255,7 +260,7 @@ public:
     // "You might be tempted to write [...] them as inline functions 
     // inside their respective header files, but this is something you 
     // must definitely not do. An inline function can be duplicated 
-    // in every file in which it appears – and this duplication 
+    // in every file in which it appears ï¿½ and this duplication 
     // includes the static object definition. Because inline functions 
     // automatically default to internal linkage, this would result in 
     // having multiple static objects across the various translation 
@@ -264,8 +269,20 @@ public:
     // function, and this means not making the wrapping functions inline",
     // according to Chapter 10 of "Thinking in C++, 2nd ed. Volume 1" by Bruce Eckel, 
     // http://www.mindview.net/
-    static const Matrix3& zero();
-    static const Matrix3& identity(); 
+    // *** End of G3D comment ***
+
+    static const Matrix3& zero() {
+        static Matrix3 m(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        return m;
+    }
+
+    static const Matrix3& identity() {
+        static Matrix3 m(1, 0, 0, 0, 1, 0, 0, 0, 1);
+        return m;
+    }
+
+    // static const Matrix3& zero();
+    // static const Matrix3& identity(); 
 
     // Deprecated. 
     /** @deprecated Use Matrix3::zero() */
